@@ -1,4 +1,10 @@
-function saveBudgetToLocal(userBudget){
+const startBudget = document.getElementById('startBudget');
+const calculateBudget = document.getElementById('calculateBudget');
+startBudget.addEventListener("click", getExpenses);
+calculateBudget.addEventListener("click", startCalculateBudget);
+
+
+/*function saveBudgetToLocal(userBudget){
   localStorage.setItem('userBudget', JSON.stringify(userBudget));
 }
 
@@ -16,34 +22,73 @@ function clearBudgetFromLocal(){
 function getUserInput(promptMessage, isNumber = false) {
   const userInput = prompt(promptMessage);
   return isNumber ? parseFloat(userInput) : userInput;
-}
+}*/
 
+expenseInputsDiv = "";
 
+function getExpenses() {
+  const numberOfExpenses = document.getElementById('numExpenses').value;
+  const expenseInputsDiv = document.getElementById('expenseInputs');
 
-function getExpenses(numberOfExpenses) {
-  const expenses = [];
   // collect expenses dynamically
   for (let i = 1; i <= numberOfExpenses; i++) {
-    let expense = getUserInput(`Enter expense ${i}: `, true);
-    if (isNaN(expense) || expense < 0) {
-      console.log(`⚠️ Invalid input for expense ${i}, setting it it $0`);
-      expense = 0;
+
+    if (isNaN(numberOfExpenses) || numberOfExpenses < 0) {
+      alert("⚠️ Enter a valid number of expenses");
+      return;
     }
-    expenses.push(expense);
+
+    let expenseLabel = document.createElement('label');
+    expenseLabel.textContent = `Enter expense ${i}: `;
+
+    let expenseInput = document.createElement('input');
+    expenseInput.type = 'number';
+    expenseInput.classList.add('expenseValue');
+
+    
+
+    expenseInputsDiv.appendChild(expenseLabel);
+    expenseInputsDiv.appendChild(expenseInput);
+    expenseInputsDiv.appendChild(document.createElement('br'));
   }
-  return expenses;
+
+  document.getElementById('calculateBudget').style.display = 'inline-block';
+  document.getElementById('clearBudget').style.display = 'inline-block';
+
 }
 
-function calculateTotalExpenses(expenses) {
+function startCalculateBudget() {
+ let userBudget = {
+       userName: document.getElementById('userName').value,
+       income: parseFloat(document.getElementById('income').value),
+       expenses: [],
+       numberOfExpenses: parseInt(document.getElementById('numExpenses').value),
+       totalExpenses: 0,
+       tax: 0,
+       netIncome: 0,
+       balance: 0,
+       savings: 0,
+       finalStatus: 0,
+ };
+
+  if (!userBudget.userName || isNaN(userBudget.income) || userBudget.income <= 0) {
+      alert("⚠️ Enter a valid name and income");
+      return;
+  }
+
+   let expenseInputs = document.getElementsByClassName('expenseValue');
+}
+
+/*function calculateTotalExpenses(expenses) {
   // Calculate total expenses using the array
   let totalExpenses = 0;
   for (let index = 0; index < expenses.length; index++) {
     totalExpenses += expenses[index];
   }
   return totalExpenses;
-}
+}*/
 
-function calculateTax(income, taxRate) {
+/*function calculateTax(income, taxRate) {
   return income * taxRate;
 }
 function calculateNetIncome(income, tax) {
@@ -67,9 +112,9 @@ function getFinancialStatus(savings) {
     finalStatus = '🚨 Critical! Your savings are too low!';
   }
   return finalStatus;
-}
+}*/
 
-function displayResults(userBudget) {
+/*function displayResults(userBudget) {
   console.log('📊 Personal Budget Tracker App');
   console.log(`User: ${userBudget.userName}`);
   console.log(`💰 Total Income: $${userBudget.income}`);
@@ -89,17 +134,17 @@ function displayResults(userBudget) {
   for (let index = 0; index < userBudget.expenses.length; index++) {
     console.log(`Expense ${index + 1} : $${userBudget.expenses[index]}`);
   }
-}
+}*/
 
-function checkOverSpending(userBudget) {
+/*function checkOverSpending(userBudget) {
   // Check if expenses exceed income
   return userBudget.totalExpenses > userBudget.income
     ? '⚠️ Warning: You are spending more than your income!'
     : '';
-}
+}*/
 
 // function to calculate financial details
-function calculateBudget(userBudget) {
+/*function calculateBudget(userBudget) {
   userBudget.expenses = getExpenses(userBudget.numberOfExpenses);
 
   userBudget.totalExpenses = calculateTotalExpenses(userBudget.expenses);
@@ -121,28 +166,17 @@ function calculateBudget(userBudget) {
   // Determine the financial health status
   userBudget.finalStatus = getFinancialStatus(userBudget.savings);
   saveBudgetToLocal(userBudget);
-}
+}*/
 
 // Main function to the run the budget tracker
-function runBudgetTracker() {
+/*function runBudgetTracker() {
   let userBudget = getBudgetFromLocal();
 
   if(userBudget){
     console.log('📂 Info: Loaded data in local storage.');
     displayResults(userBudget);
   }else{
-          userBudget = {
-          userName: '',
-          income: 0,
-          expenses: [],
-          numberOfExpenses: 0,
-          totalExpenses: 0,
-          tax: 0,
-          netIncome: 0,
-          balance: 0,
-          savings: 0,
-          finalStatus: 0,
-        };
+         
 
         userBudget.userName = getUserInput('Enter your name: ');
         userBudget.income = getUserInput('Enter your total income: ', true);
@@ -165,7 +199,7 @@ function runBudgetTracker() {
           displayResults(userBudget);
         }
       }
-  }
+  }*/
 
- clearBudgetFromLocal();
- runBudgetTracker();
+ //clearBudgetFromLocal();
+ //runBudgetTracker();
