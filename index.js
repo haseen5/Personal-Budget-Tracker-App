@@ -24,7 +24,6 @@ function getUserInput(promptMessage, isNumber = false) {
   return isNumber ? parseFloat(userInput) : userInput;
 }*/
 
-expenseInputsDiv = "";
 
 function getExpenses() {
   const numberOfExpenses = document.getElementById('numExpenses').value;
@@ -76,7 +75,17 @@ function startCalculateBudget() {
       return;
   }
 
-   let expenseInputs = document.getElementsByClassName('expenseValue');
+ let expenseInputs = document.getElementsByClassName('expenseValue');
+ for (let i = 1; i < expenseInputs; i++) {
+      if (isNaN(numberOfExpenses) || numberOfExpenses < 0) {
+        alert("⚠️ Enter a valid number of expenses");
+        return;
+      }
+
+      let expense = parseFloat(expenseInputs[i].value);
+      userBudget.expenses.push(isNaN(expense) || expense < 0 ? 0 : expense)
+    }
+
 }
 
 /*function calculateTotalExpenses(expenses) {
