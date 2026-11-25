@@ -1,13 +1,13 @@
+const budgetResultElement = document.getElementById('budgetResult');
 const startBudget = document.getElementById('startBudget');
-const calculateBudget = document.getElementById('calculateBudget');
+const calculateBudgetElement = document.getElementById('calculateBudget');
 startBudget.addEventListener("click", getExpenses);
-calculateBudget.addEventListener("click", startCalculateBudget);
+calculateBudgetElement.addEventListener("click", startCalculateBudget);
 
 
-/*function saveBudgetToLocal(userBudget){
+function saveBudgetToLocal(userBudget){
   localStorage.setItem('userBudget', JSON.stringify(userBudget));
 }
-
 
 function getBudgetFromLocal(){
   const savedBudget = localStorage.getItem('userBudget');
@@ -18,12 +18,6 @@ function clearBudgetFromLocal(){
   localStorage.removeItem('userBudget');
   console.log('🗑️ Budget data has cleared from your local storage.');
 }
-
-function getUserInput(promptMessage, isNumber = false) {
-  const userInput = prompt(promptMessage);
-  return isNumber ? parseFloat(userInput) : userInput;
-}*/
-
 
 function getExpenses() {
   const numberOfExpenses = document.getElementById('numExpenses').value;
@@ -86,18 +80,21 @@ function startCalculateBudget() {
       userBudget.expenses.push(isNaN(expense) || expense < 0 ? 0 : expense)
     }
 
+  calculateBudget(userBudget);
+  saveBudgetToLocal(userBudget);
+  displayResults(userBudget);
 }
 
-/*function calculateTotalExpenses(expenses) {
+function calculateTotalExpenses(expenses) {
   // Calculate total expenses using the array
   let totalExpenses = 0;
   for (let index = 0; index < expenses.length; index++) {
     totalExpenses += expenses[index];
   }
   return totalExpenses;
-}*/
+}
 
-/*function calculateTax(income, taxRate) {
+function calculateTax(income, taxRate) {
   return income * taxRate;
 }
 function calculateNetIncome(income, tax) {
@@ -121,18 +118,20 @@ function getFinancialStatus(savings) {
     finalStatus = '🚨 Critical! Your savings are too low!';
   }
   return finalStatus;
-}*/
+}
 
-/*function displayResults(userBudget) {
-  console.log('📊 Personal Budget Tracker App');
-  console.log(`User: ${userBudget.userName}`);
-  console.log(`💰 Total Income: $${userBudget.income}`);
-  console.log(`💸 Total Expenses: $${userBudget.totalExpenses}`);
-  console.log(`📉 Tax Deducted (10%): $${userBudget.tax}`);
-  console.log(`💲 Net Income After Tax: $${userBudget.netIncome}`);
-  console.log(`🟢 Remaining Balance: $${userBudget.balance}`);
-  console.log(`💾 Savings (20% of balance): $${userBudget.savings}`);
-  console.log(userBudget.finalStatus);
+function displayResults(userBudget) {
+  budgetResultElement.innerHTML = `
+    <p>User: ${userBudget.userName}</p>
+    <p>💰 Total Income: $${userBudget.income}</p>
+    <p>💸 Total Expenses: $${userBudget.totalExpenses}</p>
+    <p>📉 Tax Deducted (10%): $${userBudget.tax}</p>
+    <p>💲 Net Income After Tax: $${userBudget.netIncome}</p>
+    <p>🟢 Remaining Balance: $${userBudget.balance}</p>
+    <p>💾 Savings (20% of balance): $${userBudget.savings}</p>
+    <p>${userBudget.finalStatus}</p>
+  `;
+
 
   const overspendingMessage = checkOverSpending(userBudget);
   if (overspendingMessage) {
@@ -143,18 +142,17 @@ function getFinancialStatus(savings) {
   for (let index = 0; index < userBudget.expenses.length; index++) {
     console.log(`Expense ${index + 1} : $${userBudget.expenses[index]}`);
   }
-}*/
+}
 
-/*function checkOverSpending(userBudget) {
+function checkOverSpending(userBudget) {
   // Check if expenses exceed income
   return userBudget.totalExpenses > userBudget.income
     ? '⚠️ Warning: You are spending more than your income!'
     : '';
-}*/
+}
 
 // function to calculate financial details
-/*function calculateBudget(userBudget) {
-  userBudget.expenses = getExpenses(userBudget.numberOfExpenses);
+  function calculateBudget(userBudget) {
 
   userBudget.totalExpenses = calculateTotalExpenses(userBudget.expenses);
   // Tax deduction (10% of income)
@@ -175,7 +173,7 @@ function getFinancialStatus(savings) {
   // Determine the financial health status
   userBudget.finalStatus = getFinancialStatus(userBudget.savings);
   saveBudgetToLocal(userBudget);
-}*/
+}
 
 // Main function to the run the budget tracker
 /*function runBudgetTracker() {

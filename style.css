@@ -20,6 +20,8 @@ input{
 
 .result{
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
+    text-transform: capitalize;
+    color: #0077ff;
 }
