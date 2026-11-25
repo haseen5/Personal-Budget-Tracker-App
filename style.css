@@ -1,27 +1,69 @@
-body{
-    font-family: Arial, sans-serif;
-    text-align: center;
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  padding: 20px;
+  margin: 0;
 }
 
-button{
-    padding: 8px 15px;
-    border-radius: 2rem;
-    margin: 8px;
-    background-color: #2d2e2c;
-    color: #ffffff;
-    cursor: pointer;
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-input{
-    margin: 5px;
-    padding: 8px;
-    width: 200px;
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
 }
 
-.result{
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: capitalize;
-    color: #0077ff;
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input[type='text'],
+input[type='number'] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+#expenseInputs {
+  margin-top: 15px;
+}
+
+#budgetResult {
+  margin-top: 25px;
+  padding: 15px;
+  background: #eef;
+  border-left: 4px solid #2980b9;
+  border-radius: 6px;
+  font-size: 25px;
+  text-align: center;
+  color: #037ef1;
+  font-weight: bold;
+  text-transform: capitalize;
 }

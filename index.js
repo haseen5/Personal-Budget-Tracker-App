@@ -1,9 +1,32 @@
 const budgetResultElement = document.getElementById('budgetResult');
-const startBudget = document.getElementById('startBudget');
+const clearBudgetElement = document.getElementById('clearBudget');
+const startBudgetElement = document.getElementById('startBudget');
 const calculateBudgetElement = document.getElementById('calculateBudget');
-startBudget.addEventListener("click", getExpenses);
-calculateBudgetElement.addEventListener("click", startCalculateBudget);
+const numberOfExpenseElement = document.getElementById('numExpenses');
+const userNameElement = document.getElementById('userName');
+const incomeElement = document.getElementById('income');
+const expenseInputsDiv = document.getElementById('expenseInputs');
 
+startBudgetElement.addEventListener("click", getExpenses);
+calculateBudgetElement.addEventListener("click", startCalculateBudget);
+clearBudgetElement.addEventListener("click", clearBudget);
+incomeElement.addEventListener("input", validateForm);
+numberOfExpenseElement.addEventListener("input", validateForm);
+userNameElement.addEventListener("input", validateForm);
+
+startBudgetElement.disabled = true;
+
+function validateForm() {
+  const incomeValid = parseFloat(incomeElement.value) > 0;
+  const userNameValid = userNameElement.value.trim().length > 0;
+  const numberOfExpenseValid = parseInt(numberOfExpenseElement.value) >= 0;
+
+  startBudgetElement.disabled = !(
+    incomeValid &&
+    userNameValid &&
+    numberOfExpenseValid
+  );
+}
 
 function saveBudgetToLocal(userBudget){
   localStorage.setItem('userBudget', JSON.stringify(userBudget));
@@ -16,29 +39,26 @@ function getBudgetFromLocal(){
 
 function clearBudgetFromLocal(){
   localStorage.removeItem('userBudget');
-  console.log('🗑️ Budget data has cleared from your local storage.');
+  alert('🗑️ Budget data has cleared from your local storage.');
 }
 
 function getExpenses() {
-  const numberOfExpenses = document.getElementById('numExpenses').value;
-  const expenseInputsDiv = document.getElementById('expenseInputs');
+  const numberOfExpenses = parseInt(numberOfExpenseElement.value);
 
-  // collect expenses dynamically
+  if (isNaN(numberOfExpenses) || numberOfExpenses <= 0) {
+    alert("⚠️ Enter a valid number of expenses");
+    return;
+  }
+
+  expenseInputsDiv.innerHTML = ''; // avoid duplicates on repeated clicks
+
   for (let i = 1; i <= numberOfExpenses; i++) {
-
-    if (isNaN(numberOfExpenses) || numberOfExpenses < 0) {
-      alert("⚠️ Enter a valid number of expenses");
-      return;
-    }
-
-    let expenseLabel = document.createElement('label');
+    const expenseLabel = document.createElement('label');
     expenseLabel.textContent = `Enter expense ${i}: `;
 
-    let expenseInput = document.createElement('input');
+    const expenseInput = document.createElement('input');
     expenseInput.type = 'number';
     expenseInput.classList.add('expenseValue');
-
-    
 
     expenseInputsDiv.appendChild(expenseLabel);
     expenseInputsDiv.appendChild(expenseInput);
@@ -46,16 +66,20 @@ function getExpenses() {
   }
 
   document.getElementById('calculateBudget').style.display = 'inline-block';
-  document.getElementById('clearBudget').style.display = 'inline-block';
+  clearBudgetElement.style.display = 'inline-block';
+}
 
+function clearBudget() {
+  clearBudgetFromLocal();
+  budgetResultElement.innerHTML = '';
 }
 
 function startCalculateBudget() {
  let userBudget = {
-       userName: document.getElementById('userName').value,
-       income: parseFloat(document.getElementById('income').value),
+       userName: userNameElement.value,
+       income: parseFloat(incomeElement.value),
        expenses: [],
-       numberOfExpenses: parseInt(document.getElementById('numExpenses').value),
+       numberOfExpenses: parseInt(numberOfExpenseElement.value),
        totalExpenses: 0,
        tax: 0,
        netIncome: 0,
@@ -64,21 +88,11 @@ function startCalculateBudget() {
        finalStatus: 0,
  };
 
-  if (!userBudget.userName || isNaN(userBudget.income) || userBudget.income <= 0) {
-      alert("⚠️ Enter a valid name and income");
-      return;
-  }
-
  let expenseInputs = document.getElementsByClassName('expenseValue');
- for (let i = 1; i < expenseInputs; i++) {
-      if (isNaN(numberOfExpenses) || numberOfExpenses < 0) {
-        alert("⚠️ Enter a valid number of expenses");
-        return;
-      }
-
-      let expense = parseFloat(expenseInputs[i].value);
-      userBudget.expenses.push(isNaN(expense) || expense < 0 ? 0 : expense)
-    }
+ for (let i = 0; i < expenseInputs.length; i++) {
+  const expense = parseFloat(expenseInputs[i].value);
+  userBudget.expenses.push(isNaN(expense) || expense < 0 ? 0 : expense);
+}
 
   calculateBudget(userBudget);
   saveBudgetToLocal(userBudget);
@@ -122,7 +136,7 @@ function getFinancialStatus(savings) {
 
 function displayResults(userBudget) {
   budgetResultElement.innerHTML = `
-    <p>User: ${userBudget.userName}</p>
+    <p>👤 User: ${userBudget.userName}</p>
     <p>💰 Total Income: $${userBudget.income}</p>
     <p>💸 Total Expenses: $${userBudget.totalExpenses}</p>
     <p>📉 Tax Deducted (10%): $${userBudget.tax}</p>
@@ -133,7 +147,7 @@ function displayResults(userBudget) {
   `;
 
 
-  const overspendingMessage = checkOverSpending(userBudget);
+  /*const overspendingMessage = checkOverSpending(userBudget);
   if (overspendingMessage) {
     console.log(overspendingMessage);
   }
@@ -141,7 +155,7 @@ function displayResults(userBudget) {
   console.log('📝 Expense Breakdown:');
   for (let index = 0; index < userBudget.expenses.length; index++) {
     console.log(`Expense ${index + 1} : $${userBudget.expenses[index]}`);
-  }
+  }*/
 }
 
 function checkOverSpending(userBudget) {
@@ -175,38 +189,11 @@ function checkOverSpending(userBudget) {
   saveBudgetToLocal(userBudget);
 }
 
-// Main function to the run the budget tracker
-/*function runBudgetTracker() {
-  let userBudget = getBudgetFromLocal();
+function runBudgetTracker() {
+  const savedBudget = getBudgetFromLocal();
+  if (savedBudget) {
+    displayResults(savedBudget);
+  }
+}
 
-  if(userBudget){
-    console.log('📂 Info: Loaded data in local storage.');
-    displayResults(userBudget);
-  }else{
-         
-
-        userBudget.userName = getUserInput('Enter your name: ');
-        userBudget.income = getUserInput('Enter your total income: ', true);
-        userBudget.numberOfExpenses = getUserInput(
-          'How many expenses do you have? ',
-          true
-        );
-
-        // validate inputes to ensure they are numbers
-        if (
-          isNaN(userBudget.income) ||
-          isNaN(userBudget.numberOfExpenses) ||
-          userBudget.income <= 0 ||
-          userBudget.numberOfExpenses < 0
-        ) {
-          console.log('⚠️ Invalid input. Please enter valid numbers.');
-          return;
-        } else {
-          calculateBudget(userBudget);
-          displayResults(userBudget);
-        }
-      }
-  }*/
-
- //clearBudgetFromLocal();
- //runBudgetTracker();
+window.addEventListener("load", runBudgetTracker);
